@@ -10,3 +10,13 @@ class ExchangeSerializer(serializers.ModelSerializer):
         model = Exchange
         fields = ['id', 'base_currency', 'target_currency', 'exchange_rate', 'date']
         read_only_fields = ['id', 'base_currency', 'target_currency', 'exchange_rate', 'date']
+
+class ExchangeRateSerializer(serializers.Serializer):
+    currency_pair = serializers.CharField()
+    exchange_rate = serializers.DecimalField(max_digits=10, decimal_places=4)
+
+class ConvertedCurrencySerializer(serializers.Serializer):
+    currency_pair = serializers.CharField()
+    amount = serializers.FloatField()
+    converted_amount = serializers.FloatField()
+    exchange_rate = serializers.DecimalField(max_digits=10, decimal_places=4)
