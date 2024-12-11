@@ -3,8 +3,9 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from exchange.models import Exchange
-from exchange.serializers import ExchangeRateSerializer
+from exchange.serializers import ExchangeRateSerializer, BaseCurrencySerializer
 from decimal import Decimal
+
 
 
 @api_view(['GET'])
@@ -66,3 +67,48 @@ def convert_currency(request, base_currency, target_currency):
         "converted_amount": round(float(converted_amount), 2),
         "exchange_rate": round(float(exchange_rate.exchange_rate), 2)
     })
+
+
+@api_view(['GET'])
+def get_best_exchange_rate(request, base_currency):
+    print(f"Received request for base_currency: {base_currency}")
+
+    exchanges = Exchange.objects.filter(
+        base_currency__code=base_currency.upper()
+    ).order_by('-exchange_rate')
+
+    if not exchanges.exists():
+        print(f"No exchanges found for {base_currency}")
+        return Response({'error': f'No exchange rate found for {base_currency}'}, status=status.HTTP_404_NOT_FOUND)
+
+    best_exchange = exchanges.first()
+    print(f"Best exchange: {best_exchange}")
+
+    return Response({
+        "currency": f"{base_currency}",
+        "exchange_rate": round(float(best_exchange.exchange_rate), 2)
+    })
+
+
+
+@api_view(['GET'])
+def get_worst_exchange_rate(request, base_currency):
+    exchanges = Exchange.objects.filter(
+        base_currency__code=base_currency.upper()
+    ).order_by('-exchange_rate')
+
+    if not exchanges or exchanges.count() == 0:
+        return Response({'error': f'No exchange rate found for {base_currency}'}, status=status.HTTP_404_NOT_FOUND)
+
+    worst_exchange = exchanges.last()
+    serializer = BaseCurrencySerializer(worst_exchange)
+
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def get_test_exchange_rate(request, base_currency=None):
+    return Response({"message": "Static endpoint works!"})
+
+
+
+

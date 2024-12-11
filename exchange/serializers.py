@@ -20,3 +20,11 @@ class ConvertedCurrencySerializer(serializers.Serializer):
     amount = serializers.FloatField()
     converted_amount = serializers.FloatField()
     exchange_rate = serializers.DecimalField(max_digits=10, decimal_places=4)
+
+class BaseCurrencySerializer(serializers.ModelSerializer):
+    base_currency = serializers.CharField(source='base_currency.code', read_only=True)
+
+    class Meta:
+        model = Exchange
+        fields = ['base_currency']
+        read_only_fields = ['base_currency']
