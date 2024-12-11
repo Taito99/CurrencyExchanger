@@ -19,7 +19,7 @@ def get_exchange_rate(request, base_currency, target_currency):
 
     data = {
         "currency_pair": f"{base_currency}/{target_currency}",
-        "exchange_rate": exchange_rate.exchange_rate,
+        "exchange_rate": round(exchange_rate.exchange_rate, 2),
     }
     serializer = ExchangeRateSerializer(data)
     return Response(serializer.data)
@@ -63,6 +63,6 @@ def convert_currency(request, base_currency, target_currency):
     return Response({
         "currency_pair": f"{base_currency}/{target_currency}",
         "amount": float(amount),
-        "converted_amount": float(converted_amount),  # Konwersja Decimal na float w odpowiedzi
-        "exchange_rate": float(exchange_rate.exchange_rate)
+        "converted_amount": round(float(converted_amount), 2),
+        "exchange_rate": round(float(exchange_rate.exchange_rate), 2)
     })
