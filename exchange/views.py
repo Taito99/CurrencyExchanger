@@ -8,9 +8,18 @@ from decimal import Decimal
 
 from exchange.utils import order_by_exchange_rate, get_5_exchange_rates
 
-
 @api_view(['GET'])
 def get_exchange_rate(request, base_currency, target_currency):
+    """Retrieve the latest exchange rate for a specific currency pair.
+
+    Args:
+        request: The HTTP request object.
+        base_currency (str): The base currency code (e.g., 'USD').
+        target_currency (str): The target currency code (e.g., 'EUR').
+
+    Returns:
+        Response: JSON data containing the exchange rate or an error message.
+    """
     exchange_rate = Exchange.objects.filter(
         base_currency__code=base_currency.upper(),
         target_currency__code=target_currency.upper()
@@ -26,7 +35,6 @@ def get_exchange_rate(request, base_currency, target_currency):
     serializer = ExchangeRateSerializer(data)
     return Response(serializer.data)
 
-
 @extend_schema(
     parameters=[
         OpenApiParameter("amount", type=float, description="Amount of money to convert", required=True),
@@ -34,6 +42,16 @@ def get_exchange_rate(request, base_currency, target_currency):
 )
 @api_view(['GET'])
 def convert_currency(request, base_currency, target_currency):
+    """Convert a specified amount of money from one currency to another.
+
+    Args:
+        request: The HTTP request object.
+        base_currency (str): The base currency code (e.g., 'USD').
+        target_currency (str): The target currency code (e.g., 'EUR').
+
+    Returns:
+        Response: JSON data containing the converted amount, exchange rate, and details.
+    """
     amount = request.query_params.get('amount')
     if not amount:
         return Response(
@@ -74,9 +92,17 @@ def convert_currency(request, base_currency, target_currency):
         "exchange_rate": round(float(exchange_rate.exchange_rate), 2)
     })
 
-
 @api_view(['GET'])
 def get_best_exchange_rate(request, base_currency):
+    """Retrieve the best exchange rate for a given base currency.
+
+    Args:
+        request: The HTTP request object.
+        base_currency (str): The base currency code (e.g., 'USD').
+
+    Returns:
+        Response: JSON data containing the target currency with the best rate or an error message.
+    """
     exchanges = order_by_exchange_rate(base_currency).first()
 
     if not exchanges:
@@ -88,9 +114,17 @@ def get_best_exchange_rate(request, base_currency):
         })
 
 
-
 @api_view(['GET'])
 def get_worst_exchange_rate(request, base_currency):
+    """Retrieve the worst exchange rate for a given base currency.
+
+    Args:
+        request: The HTTP request object.
+        base_currency (str): The base currency code (e.g., 'USD').
+
+    Returns:
+        Response: JSON data containing the target currency with the worst rate or an error message.
+    """
     exchanges = order_by_exchange_rate(base_currency).last()
 
     if not exchanges:
@@ -103,6 +137,15 @@ def get_worst_exchange_rate(request, base_currency):
 
 @api_view(['GET'])
 def get_top_5_best_exchange_rate(request, base_currency):
+    """Retrieve the top 5 best exchange rates for a given base currency.
+
+    Args:
+        request: The HTTP request object.
+        base_currency (str): The base currency code (e.g., 'USD').
+
+    Returns:
+        Response: JSON data containing the top 5 target currencies with the best rates or an error message.
+    """
     exchanges = get_5_exchange_rates(base_currency, arg="best")
 
     if not exchanges:
@@ -124,6 +167,15 @@ def get_top_5_best_exchange_rate(request, base_currency):
 
 @api_view(['GET'])
 def get_top_5_worst_exchange_rate(request, base_currency):
+    """Retrieve the top 5 worst exchange rates for a given base currency.
+
+    Args:
+        request: The HTTP request object.
+        base_currency (str): The base currency code (e.g., 'USD').
+
+    Returns:
+        Response: JSON data containing the top 5 target currencies with the worst rates or an error message.
+    """
     exchanges = get_5_exchange_rates(base_currency, arg="worst")
 
     if not exchanges:
@@ -142,7 +194,3 @@ def get_top_5_worst_exchange_rate(request, base_currency):
         "currency": f"{base_currency}",
         "top 5 exchange rates": results
     })
-
-
-
-
