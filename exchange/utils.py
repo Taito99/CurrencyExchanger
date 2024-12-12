@@ -1,9 +1,8 @@
+from logging import raiseExceptions
+
 import yfinance as yf
 from itertools import permutations
-
 from django.utils.timezone import now
-from rest_framework.response import Response
-
 from currency.models import Currency
 from exchange.models import Exchange
 
@@ -23,9 +22,14 @@ def fetch_exchange_rate(base_currency, target_currency):
         print(f"Error fetching data for pair {pair}: {e}")
     return None
 
+def clean_old_exchange_rates():
+    deleted_count, _ = Exchange.objects.exclude(date=now().date()).delete()
+    print(f"Deleted {deleted_count} outdated exchange rate records.")
+
 
 
 def populate_exchange_rate():
+    clean_old_exchange_rates()
     currencies = Currency.objects.all()
 
     if not currencies.exists():
@@ -56,3 +60,17 @@ def populate_exchange_rate():
     print(f"Successfully updated {updated_count} exchange rates.")
     if failed_pairs:
         print(f"Failed to fetch rates for the following pairs: {', '.join(failed_pairs)}, no exchange rates found in yahoo finance api")
+
+def order_by_exchange_rate(base_currency):
+    return Exchange.objects.filter(
+        base_currency__code=base_currency.upper()
+    ).order_by('-exchange_rate')
+
+def get_5_exchange_rates(base_currency, arg="best"):
+    if arg.lower() == "best":
+        return order_by_exchange_rate(base_currency)[:5]
+    elif arg.lower() == "worst":
+        return order_by_exchange_rate(base_currency).reverse()[:5]
+    else:
+        raise ValueError("Invalid argument. You must use 'best' or 'worst'.")
+

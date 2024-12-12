@@ -6,6 +6,7 @@ from exchange.models import Exchange
 from exchange.serializers import ExchangeRateSerializer, BaseCurrencySerializer
 from decimal import Decimal
 
+from exchange.utils import order_by_exchange_rate, get_5_exchange_rates
 
 
 @api_view(['GET'])
@@ -42,6 +43,11 @@ def convert_currency(request, base_currency, target_currency):
 
     try:
         amount = Decimal(amount)
+        if amount <= 0:
+            return Response(
+                {'error': "Amount must be greater than 0"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
     except (ValueError, TypeError):
         return Response(
             {'error': "Amount must be a valid number"},
@@ -71,43 +77,71 @@ def convert_currency(request, base_currency, target_currency):
 
 @api_view(['GET'])
 def get_best_exchange_rate(request, base_currency):
-    print(f"Received request for base_currency: {base_currency}")
+    exchanges = order_by_exchange_rate(base_currency).first()
 
-    exchanges = Exchange.objects.filter(
-        base_currency__code=base_currency.upper()
-    ).order_by('-exchange_rate')
-
-    if not exchanges.exists():
-        print(f"No exchanges found for {base_currency}")
+    if not exchanges:
         return Response({'error': f'No exchange rate found for {base_currency}'}, status=status.HTTP_404_NOT_FOUND)
 
-    best_exchange = exchanges.first()
-    print(f"Best exchange: {best_exchange}")
-
     return Response({
-        "currency": f"{base_currency}",
-        "exchange_rate": round(float(best_exchange.exchange_rate), 2)
-    })
+            "target_currency": exchanges.target_currency.code,
+            "exchange_rate": round(float(exchanges.exchange_rate), 2)
+        })
 
 
 
 @api_view(['GET'])
 def get_worst_exchange_rate(request, base_currency):
-    exchanges = Exchange.objects.filter(
-        base_currency__code=base_currency.upper()
-    ).order_by('-exchange_rate')
+    exchanges = order_by_exchange_rate(base_currency).last()
 
-    if not exchanges or exchanges.count() == 0:
+    if not exchanges:
         return Response({'error': f'No exchange rate found for {base_currency}'}, status=status.HTTP_404_NOT_FOUND)
 
-    worst_exchange = exchanges.last()
-    serializer = BaseCurrencySerializer(worst_exchange)
-
-    return Response(serializer.data)
+    return Response({
+            "target_currency": exchanges.target_currency.code,
+            "exchange_rate": round(float(exchanges.exchange_rate), 2)
+        })
 
 @api_view(['GET'])
-def get_test_exchange_rate(request, base_currency=None):
-    return Response({"message": "Static endpoint works!"})
+def get_top_5_best_exchange_rate(request, base_currency):
+    exchanges = get_5_exchange_rates(base_currency, arg="best")
+
+    if not exchanges:
+        return Response({'error': f'No exchange rate found for {base_currency}'})
+
+    results = [
+        {
+            "target_currency": exchange.target_currency.code,
+            "exchange_rate": round(float(exchange.exchange_rate), 2)
+        }
+        for exchange in exchanges
+    ]
+
+
+    return Response({
+        "currency": f"{base_currency}",
+        "top 5 exchange rates": results
+    })
+
+@api_view(['GET'])
+def get_top_5_worst_exchange_rate(request, base_currency):
+    exchanges = get_5_exchange_rates(base_currency, arg="worst")
+
+    if not exchanges:
+        return Response({'error': f'No exchange rate found for {base_currency}'})
+
+    results = [
+        {
+            "target_currency": exchange.target_currency.code,
+            "exchange_rate": round(float(exchange.exchange_rate), 2)
+        }
+        for exchange in exchanges
+    ]
+
+
+    return Response({
+        "currency": f"{base_currency}",
+        "top 5 exchange rates": results
+    })
 
 
 
