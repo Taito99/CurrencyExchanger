@@ -1,20 +1,13 @@
+#@Amadeusz Bujalski
 from unittest.mock import patch
 from django.core.management import call_command
 from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
-import csv
-from django.http import HttpResponse
-from django.contrib import admin
-from .models import Exchange
-from django.test import TestCase, RequestFactory
-from django.contrib.admin.sites import AdminSite
-from io import StringIO
-from datetime import datetime
-
 from currency.models import Currency
 from exchange.models import Exchange
+
 
 class CommandsTestCase(TestCase):
     """Test custom Django management commands"""

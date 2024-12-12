@@ -1,3 +1,4 @@
+#@Amadeusz Bujalski
 from django.db import models
 from currency.models import Currency
 

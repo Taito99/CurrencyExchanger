@@ -1,3 +1,4 @@
+#@Amadeusz Bujalski
 import csv
 from django.http import HttpResponse
 from django.contrib import admin

@@ -1,3 +1,4 @@
+#@Amadeusz Bujalski
 from django.urls import path
 
 from .views import get_exchange_rate, convert_currency, get_best_exchange_rate, get_worst_exchange_rate, \

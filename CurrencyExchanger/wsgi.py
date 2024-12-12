@@ -1,3 +1,4 @@
+#@Amadeusz Bujalski
 """
 WSGI config for CurrencyExchanger project.
 

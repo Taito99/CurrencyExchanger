@@ -1,9 +1,10 @@
-from logging import raiseExceptions
-import yfinance as yf
+#@Amadeusz Bujalski
 from itertools import permutations
+import yfinance as yf
 from django.utils.timezone import now
 from currency.models import Currency
 from exchange.models import Exchange
+
 
 def fetch_exchange_rate(base_currency, target_currency):
     """Fetch the latest exchange rate for a given currency pair from Yahoo Finance.

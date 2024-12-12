@@ -1,3 +1,4 @@
+#@Amadeusz Bujalski
 from rest_framework import serializers
 from exchange.models import Exchange
 

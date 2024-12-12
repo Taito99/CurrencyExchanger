@@ -1,3 +1,4 @@
+#@Amadeusz Bujalski
 from django.test import TestCase
 from currency.models import Currency
 

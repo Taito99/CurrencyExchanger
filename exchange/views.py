@@ -1,3 +1,4 @@
+#@Amadeusz Bujalski
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import status
 from rest_framework.response import Response
@@ -5,7 +6,6 @@ from rest_framework.decorators import api_view
 from exchange.models import Exchange
 from exchange.serializers import ExchangeRateSerializer, BaseCurrencySerializer
 from decimal import Decimal
-
 from exchange.utils import order_by_exchange_rate, get_5_exchange_rates
 
 @api_view(['GET'])

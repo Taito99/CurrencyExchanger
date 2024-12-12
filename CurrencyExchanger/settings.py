@@ -1,3 +1,4 @@
+#@Amadeusz Bujalski
 """
 Django settings for CurrencyExchanger project.
 

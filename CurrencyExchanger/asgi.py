@@ -1,3 +1,4 @@
+#@Amadeusz Bujalski
 """
 ASGI config for CurrencyExchanger project.
 
