@@ -41,10 +41,11 @@ class CommandsTestCase(TestCase):
 class ExchangeModelTests(TestCase):
     """Test the Exchange model"""
 
-    def setUp(self):
-        """Set up test data"""
-        self.currency_usd = Currency.objects.create(code="USD", name="US Dollar")
-        self.currency_eur = Currency.objects.create(code="EUR", name="Euro")
+    @classmethod
+    def setUpTestData(cls):
+        """Set up test data once for all tests"""
+        cls.currency_usd = Currency.objects.create(code="USD", name="US Dollar")
+        cls.currency_eur = Currency.objects.create(code="EUR", name="Euro")
 
     def test_create_exchange_successful(self):
         """Test creating an exchange rate is successful"""
@@ -83,16 +84,17 @@ class ExchangeModelTests(TestCase):
 class URLTests(TestCase):
     """Tests for the exchange-related URLs"""
 
-    def setUp(self):
-        """Set up test data"""
-        self.client = APIClient()
-        self.currency_usd = Currency.objects.create(code="USD", name="US Dollar")
-        self.currency_eur = Currency.objects.create(code="EUR", name="Euro")
-        self.currency_pln = Currency.objects.create(code="PLN", name="Polish Zloty")
+    @classmethod
+    def setUpTestData(cls):
+        """Set up test data once for all tests"""
+        cls.client = APIClient()
+        cls.currency_usd = Currency.objects.create(code="USD", name="US Dollar")
+        cls.currency_eur = Currency.objects.create(code="EUR", name="Euro")
+        cls.currency_pln = Currency.objects.create(code="PLN", name="Polish Zloty")
 
-        self.exchange = Exchange.objects.create(
-            base_currency=self.currency_usd,
-            target_currency=self.currency_eur,
+        cls.exchange = Exchange.objects.create(
+            base_currency=cls.currency_usd,
+            target_currency=cls.currency_eur,
             exchange_rate=1.1234
         )
 
