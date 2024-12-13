@@ -152,6 +152,10 @@ The Django Admin interface allows you to manage exchange rates. You can:
 - SQLite (default database; replaceable with other databases)
 - `openpyxl` for Excel exports
 
+## Author
+
+Created by **Amadeusz Bujalski**.
+
 ## License
 
 This project is licensed under the MIT License. See the LICENSE file for details.
