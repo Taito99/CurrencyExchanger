@@ -149,7 +149,7 @@ The Django Admin interface allows you to manage exchange rates. You can:
 
 - Django
 - Django REST Framework
-- SQLite (default database; replaceable with other databases)
+- MySQL
 - `openpyxl` for Excel exports
 
 ## Author
