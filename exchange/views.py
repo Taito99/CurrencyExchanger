@@ -1,12 +1,13 @@
 #@Amadeusz Bujalski
+from decimal import Decimal
+
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import status
-from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from rest_framework.response import Response
 from exchange.models import Exchange
-from exchange.serializers import ExchangeRateSerializer, BaseCurrencySerializer
-from decimal import Decimal
 from exchange.utils import order_by_exchange_rate, get_5_exchange_rates
+
 
 @api_view(['GET'])
 def get_exchange_rate(request, base_currency, target_currency):
@@ -30,10 +31,9 @@ def get_exchange_rate(request, base_currency, target_currency):
 
     data = {
         "currency_pair": f"{base_currency}/{target_currency}",
-        "exchange_rate": round(exchange_rate.exchange_rate, 2),
+        "exchange_rate": f"{round(exchange_rate.exchange_rate, 2)}",
     }
-    serializer = ExchangeRateSerializer(data)
-    return Response(serializer.data)
+    return Response(data)
 
 @extend_schema(
     parameters=[
