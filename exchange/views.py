@@ -31,7 +31,7 @@ def get_exchange_rate(request, base_currency, target_currency):
 
     data = {
         "currency_pair": f"{base_currency}/{target_currency}",
-        "exchange_rate": f"{round(exchange_rate.exchange_rate, 2)}",
+        "exchange_rate": f"{exchange_rate.exchange_rate:.2f}",
     }
     return Response(data)
 
@@ -88,8 +88,8 @@ def convert_currency(request, base_currency, target_currency):
     return Response({
         "currency_pair": f"{base_currency}/{target_currency}",
         "amount": float(amount),
-        "converted_amount": round(float(converted_amount), 2),
-        "exchange_rate": round(float(exchange_rate.exchange_rate), 2)
+        "converted_amount": f"{float(converted_amount):.2f}",
+        "exchange_rate": f"{float(exchange_rate.exchange_rate):.2f}"
     })
 
 @api_view(['GET'])
@@ -110,7 +110,7 @@ def get_best_exchange_rate(request, base_currency):
 
     return Response({
             "target_currency": exchanges.target_currency.code,
-            "exchange_rate": round(float(exchanges.exchange_rate), 2)
+            "exchange_rate": f"{exchanges.exchange_rate:.2f}"
         })
 
 
@@ -132,7 +132,7 @@ def get_worst_exchange_rate(request, base_currency):
 
     return Response({
             "target_currency": exchanges.target_currency.code,
-            "exchange_rate": round(float(exchanges.exchange_rate), 2)
+            "exchange_rate": f"{exchanges.exchange_rate:.2f}"
         })
 
 @api_view(['GET'])
@@ -154,7 +154,7 @@ def get_top_5_best_exchange_rate(request, base_currency):
     results = [
         {
             "target_currency": exchange.target_currency.code,
-            "exchange_rate": round(float(exchange.exchange_rate), 2)
+            "exchange_rate": f"{exchanges.exchange_rate:.2f}"
         }
         for exchange in exchanges
     ]
@@ -184,7 +184,7 @@ def get_top_5_worst_exchange_rate(request, base_currency):
     results = [
         {
             "target_currency": exchange.target_currency.code,
-            "exchange_rate": round(float(exchange.exchange_rate), 2)
+            "exchange_rate": f"{exchanges.exchange_rate:.2f}"
         }
         for exchange in exchanges
     ]
