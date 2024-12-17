@@ -2,6 +2,7 @@
 from rest_framework import serializers
 from exchange.models import Exchange
 
+
 class ExchangeRateSerializer(serializers.Serializer):
     """Serializer for a single exchange rate.
 
@@ -11,4 +12,3 @@ class ExchangeRateSerializer(serializers.Serializer):
     """
     currency_pair = serializers.CharField()
     exchange_rate = serializers.DecimalField(max_digits=10, decimal_places=4)
-
