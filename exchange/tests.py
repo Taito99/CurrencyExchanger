@@ -162,5 +162,3 @@ class URLTests(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("top 5 exchange rates", response.data)
-
-
