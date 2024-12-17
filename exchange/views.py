@@ -24,7 +24,7 @@ def get_exchange_rate(request, base_currency, target_currency):
     exchange_rate = Exchange.objects.filter(
         base_currency__code=base_currency.upper(),
         target_currency__code=target_currency.upper()
-    ).last()
+    ).first()
     if not exchange_rate:
         return Response({'error': f'No exchange rate found for {base_currency}/{target_currency}'},
                         status=status.HTTP_404_NOT_FOUND)
@@ -75,7 +75,7 @@ def convert_currency(request, base_currency, target_currency):
     exchange_rate = Exchange.objects.filter(
         base_currency__code=base_currency.upper(),
         target_currency__code=target_currency.upper()
-    ).last()
+    ).first()
 
     if not exchange_rate:
         return Response(
@@ -125,7 +125,7 @@ def get_worst_exchange_rate(request, base_currency):
     Returns:
         Response: JSON data containing the target currency with the worst rate or an error message.
     """
-    exchanges = order_by_exchange_rate(base_currency).last()
+    exchanges = order_by_exchange_rate(base_currency).first()
 
     if not exchanges:
         return Response({'error': f'No exchange rate found for {base_currency}'}, status=status.HTTP_404_NOT_FOUND)
