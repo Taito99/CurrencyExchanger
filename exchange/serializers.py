@@ -1,14 +1,13 @@
-#@Amadeusz Bujalski
 from rest_framework import serializers
-from exchange.models import Exchange
+from .models import Exchange
 
-
-class ExchangeRateSerializer(serializers.Serializer):
-    """Serializer for a single exchange rate.
-
-    Fields:
-        currency_pair (str): The currency pair (e.g., "USD/EUR").
-        exchange_rate (Decimal): The exchange rate between the base and target currencies.
-    """
-    currency_pair = serializers.CharField()
+class ExchangeRateSerializer(serializers.ModelSerializer):
+    currency_pair = serializers.SerializerMethodField()
     exchange_rate = serializers.DecimalField(max_digits=10, decimal_places=4)
+
+    class Meta:
+        model = Exchange
+        fields = ['currency_pair', 'exchange_rate']
+
+    def get_currency_pair(self, obj):
+        return f"{obj.base_currency.code}/{obj.target_currency.code}"

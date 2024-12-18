@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'currency',
     'exchange',
+    'django_filters',
 
     #first party
     'django.contrib.admin',
